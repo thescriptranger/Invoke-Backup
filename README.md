@@ -49,6 +49,8 @@ The script relies on an XML configuration file to define the backup sources, des
 - **IncludedFileExtensions:** Files with these extensions are included in the backup if Enable is set to true. 
 - **ExcludedFileExtensions:** Files with these extensions are excluded from the backup if Enable is set to true. 
 
+---
+
 ### Running the Script
 
 1. Save the script to a `.ps1` file (e.g., `Invoke-Backup.ps1`).
@@ -59,6 +61,8 @@ The script relies on an XML configuration file to define the backup sources, des
    .\Invoke-Backup.ps1
 
 > Note that you do not need to specifiy the XML Configuration file, as the script automatically looks for an XML file of the same name of the Invoke-Backup script.
+
+---
 
 ## Automating with Task Scheduler
 
@@ -82,10 +86,12 @@ To schedule the backup script to run weekly:
      ```
    - In the **Add arguments (optional)** field, enter:
      ```plaintext
-     -NoProfile -ExecutionPolicy Bypass -File "C:\Path\To\Invoke-Backup.ps1"
+     -NoProfile -ExecutionPolicy Bypass -File "C:\Path\To\Invoke-Backup.ps1" -ConfigFile "C:\Path\To\BackupConfig.xml"
      ```
 6. (Optional) Set conditions and advanced settings under the **Conditions** and **Settings** tabs.
 7. Click **OK** and provide your credentials if prompted.
+
+---
 
 ## Contribution
 
