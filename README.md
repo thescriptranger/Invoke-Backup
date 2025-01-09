@@ -82,7 +82,7 @@ To schedule the backup script to run weekly:
      ```
    - In the **Add arguments (optional)** field, enter:
      ```plaintext
-     -NoProfile -ExecutionPolicy Bypass -File "C:\Path\To\Invoke-Backup.ps1" -ConfigFile "C:\Path\To\BackupConfig.xml"
+     -NoProfile -ExecutionPolicy Bypass -File "C:\Path\To\Invoke-Backup.ps1"
      ```
 6. (Optional) Set conditions and advanced settings under the **Conditions** and **Settings** tabs.
 7. Click **OK** and provide your credentials if prompted.
