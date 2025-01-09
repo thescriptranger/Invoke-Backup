@@ -60,7 +60,7 @@ The script relies on an XML configuration file to define the backup sources, des
    ```powershell
    .\Invoke-Backup.ps1
 
-> Note that you do not need to specifiy the XML Configuration file, as the script automatically looks for an XML file of the same name of the Invoke-Backup script.
+> Note that you do not need to specify the XML Configuration file, as the script automatically looks for an XML file of the same name of the Invoke-Backup script.
 
 ---
 
