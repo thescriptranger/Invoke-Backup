@@ -1,150 +1,104 @@
-# Get-Something PowerShell Function Template
+# Invoke-Backup PowerShell Script
 
 ## Overview
 
-The `Get-Something` function is a PowerShell script template designed to retrieve information based on the `SomethingToGet`. This template provides a structured framework following SOLID principles, KISS, YAGNI, and DRY as well as clean code principles, ensuring maintainability, scalability, and ease of use.
+The `Invoke-Backup` PowerShell script is designed to back up files from source to destination directories based on an XML configuration file. The script follows SOLID principles, KISS, YAGNI, and DRY while adhering to clean code practices to ensure maintainability and scalability.
 
-## Features
+---
 
-- **Cmdlet Binding**: Supports pipeline input and property binding.
-- **Parameter Validation**: Ensures the input parameters meet expected criteria.
-- **Logging**: Records script execution details and errors.
-- **Configuration Management**: Supports configuration files for flexible settings management.
-- **Structured Error Handling**: Gracefully handles exceptions and errors.
-- **Modular Script Loading**: Dynamically loads additional scripts from a specified directory.
+## Key Features
 
-## Usage
+- **Configurable via XML:** Reads source and destination directories, included file extensions, and excluded file extensions from an XML file.
+- **Incremental Backup:** Only backs up files modified since the last backup.
+- **File Filtering:** Includes or excludes files based on extensions specified in the XML configuration file.
+- **Logging:** Creates detailed logs of backup operations and removes logs older than 30 days.
+- **Path Normalization:** Ensures compatibility with both local and network paths.
+- **Error Handling:** Handles invalid paths and missing configuration gracefully.
 
-### Parameters
+---
 
-- `SomethingToGet` (String[]): Specifies a string value to process. This parameter is optional and supports pipeline input and is purely for reference on creating a parameter.
+## XML Configuration File
 
-### Examples
+The script relies on an XML configuration file to define the backup sources, destinations, and file filtering rules. Here's an example:
 
-```powershell
-# Basic usage with a single string value
-Get-Something -SomethingToGet "TextValue1"
-
-# Using pipeline input
-"TextValue1", "TextValue2" | Get-Something
+```xml
+<BackupSettings>
+    <Sources>
+        <Source>
+            <SourcePath>C:\Users\Admin\Documents</SourcePath>
+            <DestinationPath>\\MyNAS\Backup\Admin\Documents</DestinationPath>
+        </Source>
+        <Source>
+            <SourcePath>C:\Users\Development</SourcePath>
+            <DestinationPath>\\MyNAS\Backup\Admin\Development</DestinationPath>
+        </Source>
+    </Sources>
+    <IncludedFileExtensions Enable="false">
+        <Extension>.docx</Extension>
+        <Extension>.xlsx</Extension>
+        <Extension>.pdf</Extension>
+    </IncludedFileExtensions>
+    <ExcludedFileExtensions Enable="true">
+        <Extension>.tmp</Extension>
+        <Extension>.log</Extension>
+        <Extension>.bak</Extension>
+    </ExcludedFileExtensions>
+</BackupSettings>
 ```
+- **Sources:** Defines source directories to back up and their corresponding destinations. 
+- **IncludedFileExtensions:** Files with these extensions are included in the backup if Enable is set to true. 
+- **ExcludedFileExtensions:** Files with these extensions are excluded from the backup if Enable is set to true. 
 
-### Script Blocks
+### Running the Script
 
-- **BEGIN**: Initializes variables, starts logging, and loads configuration settings.
-- **PROCESS**: Contains the main processing logic (currently a placeholder for future enhancements).
-- **END**: Finalizes the script execution, stops logging, and outputs execution time.
+1. Save the script to a `.ps1` file (e.g., `Invoke-Backup.ps1`).
+2. Place the XML configuration file (e.g., `BackupConfig.xml`) in the same directory as the script.
+3. Execute the script using the following command:
 
-### Detailed Script Breakdown
-#### Synopsis
+   ```powershell
+   .\Invoke-Backup.ps1
 
-```powershell
-<#
-.SYNOPSIS
-    Retrieves information based on UserPrincipalName.
-#>
-```
-Provides a brief overview of what the function does.
+> Note that you do not need to specifiy the XML Configuration file, as the script automatically looks for an XML file of the same name of the Invoke-Backup script.
 
-#### Notes
-```powershell
-<#
-.NOTES
-    Name: Get-Something
-    Author: Script Ranger
-    Version: 1.0
-    DateCreated: 2021.01.01
-#>
-```
-Contains metadata about the script, including author, version, and creation date.
+## Automating with Task Scheduler
 
-#### Examples
-```powershell
-<#
-.EXAMPLE
-    Get-Something -UserPrincipalName "username@somedomain.com"
-#>
-```
-Shows how to use the function with sample input.
+To schedule the backup script to run weekly:
 
-#### Link
-```powershell
-<#
-.LINK
-    https://github.com/YourRepositoryLinkHere
-#>
-```
-Provides a link to the repository or relevant documentation.
+1. Open **Task Scheduler**.
+2. Select **Create Task** from the right-hand menu.
+3. Under the **General** tab:
+   - Provide a name for the task (e.g., "Weekly Backup").
+   - Select **Run whether user is logged on or not**.
+   - Check **Run with highest privileges**.
+4. Navigate to the **Triggers** tab:
+   - Click **New**.
+   - Set the task to run weekly and select the desired day and time.
+5. Go to the **Actions** tab:
+   - Click **New**.
+   - In the **Action** dropdown, select **Start a program**.
+   - In the **Program/script** field, enter:
+     ```plaintext
+     powershell.exe
+     ```
+   - In the **Add arguments (optional)** field, enter:
+     ```plaintext
+     -NoProfile -ExecutionPolicy Bypass -File "C:\Path\To\Invoke-Backup.ps1" -ConfigFile "C:\Path\To\BackupConfig.xml"
+     ```
+6. (Optional) Set conditions and advanced settings under the **Conditions** and **Settings** tabs.
+7. Click **OK** and provide your credentials if prompted.
 
-#### Parameters
-```powershell
-param(
-    [Parameter(
-        Mandatory = $false,
-        ValueFromPipeline = $true,
-        ValueFromPipelineByPropertyName = $true,
-        Position = 0
-    )]
-    [string[]] $UserPrincipalName
-)
-```
-Defines the parameters for the function. In this case, UserPrincipalName is optional and supports pipeline input.
+## Contribution
 
-#### BEGIN Block
-```powershell
-BEGIN {
-    $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
-    $myRootPath = $PSScriptRoot
-    $myFunctionName = $MyInvocation.MyCommand.Name
-    Push-Location $myRootPath
+Contributions are welcome! Please fork the repository and submit pull requests to enhance functionality or fix bugs.
 
-    $logFile = Join-Path -Path "$myRootPath\_log" -ChildPath "$((Get-Date).ToString('yyyy.MM.dd.HHmmss')).$myFunctionName.log"
-    $configFile = "$myFunctionName.xml"
-    Start-Transcript -Path $logFile
+---
 
-    if (Test-Path $configFile) {
-        [xml]$settings = Get-Content $configFile
-        # Process configuration settings if needed
-    }
+## License
 
-    # Load function scripts
-    Get-ChildItem -Path "$myRootPath\_function" -Filter "*.ps1" -Recurse -Verbose | ForEach-Object { . $_ }
-}
-```
-- **Initialization**: Starts a stopwatch to measure execution time and sets up root paths.
-- **Logging**: Initializes a log file and starts a transcript for logging.
-- **Configuration**: Loads settings from an XML configuration file if it exists.
-- **Script Loading**: Loads additional scripts from the _function directory.
+This project is licensed under the MIT License. See the `LICENSE` file for details.
 
-#### PROCESS Block
-```powershell
-PROCESS {
-    # Implement processing logic here if needed
-}
-```
-Placeholder for the main processing logic.
+---
 
-#### END Block
-```powershell
-END {
-    $stopWatch.Stop()
-    Write-Output "$myFunctionName Completed"
-    Write-Output $stopWatch.Elapsed
-    Stop-Transcript
-    Pop-Location
-}
-```
-- **Finalization**: Stops the stopwatch and logs the completion message and elapsed time.
-- **Logging**: Stops the transcript and reverts to the original location.
+## Contact
 
-### Contribution
-Contributions are welcome! Please fork the repository and submit pull requests.
-
-### License
-This project is licensed under the MIT License. See the LICENSE file for details.
-
-### Contact
-For any questions or suggestions, please open an issue or contact Script Ranger.
-
-
-This `README.md` file provides a detailed explanation of the function template, including its features, usage, and script blocks. It also includes sections for contribution, license, and contact information. Adjust the placeholder information (e.g., GitHub link, email address) as needed.
+For any questions, suggestions, or issues, please open an issue or contact **Script Ranger**.
