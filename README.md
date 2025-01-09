@@ -4,6 +4,8 @@
 
 The `Invoke-Backup` PowerShell script is designed to back up files from source to destination directories based on an XML configuration file. The script follows SOLID principles, KISS, YAGNI, and DRY while adhering to clean code practices to ensure maintainability and scalability.
 
+> I use this script to backup all of my development work from Dropbox to my Synology NAS, along with my virtual machines, Homelab configurations, documents, and many other important things that I want double and triple backed up!
+
 ---
 
 ## Key Features
@@ -90,6 +92,16 @@ To schedule the backup script to run weekly:
      ```
 6. (Optional) Set conditions and advanced settings under the **Conditions** and **Settings** tabs.
 7. Click **OK** and provide your credentials if prompted.
+
+### Alternative way to set up task scheduler
+
+```powershell
+$action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoProfile -ExecutionPolicy Bypass -File `\"C:\Path\To\Invoke-Backup.ps1`\"
+
+$trigger = New-ScheduledTaskTrigger -Weekly -DaysOfWeek Monday -At 3:00AM
+
+Register-ScheduledTask -TaskName "Weekly Backup" -Action $action -Trigger $trigger -Description "Runs the Invoke-Backup script weekly." -User "NT AUTHORITY\SYSTEM" -RunLevel Highest
+```
 
 ---
 
