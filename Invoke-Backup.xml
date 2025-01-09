@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+
+<BackupSettings>
+    <Sources>
+        <Source>
+            <SourcePath>C:\Users\Art\Documents</SourcePath>
+            <DestinationPath>\\MyNAS\Backup\Art\Documents</DestinationPath>
+        </Source>
+        <Source>
+            <SourcePath>C:\Users\Art\Dropbox\Development</SourcePath>
+            <DestinationPath>\\MyNAS\Backup\Art\Development</DestinationPath>
+        </Source>
+    </Sources>
+    <IncludedFileExtensions Enable="false">
+        <Extension>.docx</Extension>
+        <Extension>.xlsx</Extension>
+        <Extension>.pdf</Extension>
+    </IncludedFileExtensions>
+    <ExcludedFileExtensions Enable="false">
+        <Extension>.tmp</Extension>
+        <Extension>.log</Extension>
+        <Extension>.bak</Extension>
+    </ExcludedFileExtensions>
+</BackupSettings>
